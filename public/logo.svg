@@ -1,0 +1,33 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bitcoin Holding Logo - Exact Match -->
+  <defs>
+    <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6600;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e55a00;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Primeira seta (topo) - Laranja -->
+  <polygon points="200,40 320,120 280,145 200,85 120,145 80,120" fill="url(#orangeGradient)"/>
+  
+  <!-- Segunda seta - Bege claro -->
+  <polygon points="200,85 300,155 265,175 200,125 135,175 100,155" fill="#f2ebe3"/>
+  
+  <!-- Terceira seta - Branco -->
+  <polygon points="200,125 280,185 250,205 200,165 150,205 120,185" fill="#ffffff"/>
+  
+  <!-- Quarta seta - Bege médio -->
+  <polygon points="200,165 260,215 235,235 200,205 165,235 140,215" fill="#e8ddd0"/>
+  
+  <!-- Quinta seta - Branco -->
+  <polygon points="200,205 240,245 220,265 200,245 180,265 160,245" fill="#ffffff"/>
+  
+  <!-- Sexta seta (base) - Bege escuro -->
+  <polygon points="200,245 220,275 200,285 180,275" fill="#d6c8b5"/>
+  
+  <!-- Texto Bitcoin -->
+  <text x="70" y="450" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="url(#orangeGradient)">Bitcoin</text>
+  
+  <!-- Texto Holding -->
+  <text x="254" y="450" font-family="Arial, sans-serif" font-size="42" font-weight="300" fill="#c4b8a8">Holding</text>
+</svg>
