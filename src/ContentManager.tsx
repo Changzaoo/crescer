@@ -182,7 +182,7 @@ export default function ContentManager() {
   // Buscar preço do Bitcoin periodicamente
   useEffect(() => {
     fetchBitcoinPrice(); // Buscar imediatamente
-    const interval = setInterval(fetchBitcoinPrice, 30000); // Atualizar a cada 30 segundos
+    const interval = setInterval(fetchBitcoinPrice, 1000); // Atualizar a cada 1 segundo
     return () => clearInterval(interval);
   }, [selectedCurrency]);
 
@@ -724,7 +724,10 @@ export default function ContentManager() {
                   <p className="text-5xl font-black mb-2">
                     {selectedCurrency} {currentBitcoinPrice.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                   </p>
-                  <p className="text-lg opacity-90">Binance • Atualizado em tempo real</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <p className="text-lg opacity-90">Binance • Atualizado a cada segundo</p>
+                  </div>
                 </div>
 
                 {/* Card de Totais */}
