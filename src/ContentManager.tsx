@@ -8,7 +8,7 @@ interface User {
   id: string;
   username: string;
   passwordHash: string;
-  email: string;
+  email?: string; // Email opcional
   createdAt: string;
 }
 
@@ -40,7 +40,7 @@ export default function ContentManager() {
   
   // Estados de formulários
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
-  const [registerForm, setRegisterForm] = useState({ username: '', email: '', password: '', confirmPassword: '' });
+  const [registerForm, setRegisterForm] = useState({ username: '', password: '', confirmPassword: '' });
   const [error, setError] = useState('');
   
   // Estados de preço e moeda
@@ -49,6 +49,9 @@ export default function ContentManager() {
   
   // Estados de transações
   const [userTransactions, setUserTransactions] = useState<BitcoinTransaction[]>([]);
+  
+  // Estado do menu flutuante
+  const [showFabMenu, setShowFabMenu] = useState(false);
   
   // Estados de formulários de transação
   const [newBuyTransaction, setNewBuyTransaction] = useState({
@@ -71,8 +74,8 @@ export default function ContentManager() {
 
   // Função para registrar usuário
   const registerUser = async () => {
-    if (!registerForm.username || !registerForm.email || !registerForm.password) {
-      setError('Todos os campos são obrigatórios');
+    if (!registerForm.username || !registerForm.password) {
+      setError('Usuário e senha são obrigatórios');
       return;
     }
 
@@ -103,7 +106,6 @@ export default function ContentManager() {
       const newUser: User = {
         id: userId,
         username: registerForm.username,
-        email: registerForm.email,
         passwordHash: hashPassword(registerForm.password),
         createdAt: new Date().toISOString()
       };
@@ -120,7 +122,7 @@ export default function ContentManager() {
       setError('');
       
       // Limpar formulário
-      setRegisterForm({ username: '', email: '', password: '', confirmPassword: '' });
+      setRegisterForm({ username: '', password: '', confirmPassword: '' });
     } catch (error) {
       console.error('Erro ao registrar usuário:', error);
       setError('Erro ao criar conta. Tente novamente.');
@@ -350,9 +352,10 @@ export default function ContentManager() {
   useEffect(() => {
     setNewBuyTransaction(prev => ({
       ...prev,
-      fiatCurrency: selectedCurrency
+      fiatCurrency: selectedCurrency,
+      bitcoinPrice: currentBitcoinPrice
     }));
-  }, [selectedCurrency]);
+  }, [selectedCurrency, currentBitcoinPrice]);
 
   // Carregar transações do usuário quando autenticado
   useEffect(() => {
@@ -365,17 +368,17 @@ export default function ContentManager() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl shadow-2xl border border-white/30 p-8 w-full max-w-md">
+        <div className="apple-modal-content p-6 sm:p-8 w-full max-w-xs apple-fade-in">
           {/* Logo */}
-          <div className="text-center mb-8">
-            <img src="/logo.png" alt="Bitcoin Holding" className="h-16 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900">Crescer - Bitcoin Holding</h1>
-            <p className="text-gray-600">Sistema de Rastreamento de Bitcoin</p>
+          <div className="text-center mb-6 sm:mb-8">
+            <img src="/logo.png" alt="Crescer - Bitcoin Holding" className="h-12 sm:h-16 mx-auto mb-3 sm:mb-4 apple-bounce" />
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Crescer - Bitcoin Holding</h1>
+            <p className="text-sm sm:text-base text-gray-600">Sistema de Rastreamento de Bitcoin</p>
           </div>
 
           {/* Erro */}
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-4">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 apple-badge bg-red-50 text-red-800 mb-4">
               {error}
             </div>
           )}
@@ -391,7 +394,7 @@ export default function ContentManager() {
                   type="text"
                   value={loginForm.username}
                   onChange={(e) => setLoginForm({...loginForm, username: e.target.value})}
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  className="apple-input w-full px-4 py-3"
                   placeholder="Digite seu usuário"
                 />
               </div>
@@ -402,14 +405,14 @@ export default function ContentManager() {
                   type="password"
                   value={loginForm.password}
                   onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  className="apple-input w-full px-4 py-3"
                   placeholder="Digite sua senha"
                 />
               </div>
 
               <button
                 onClick={loginUser}
-                className="w-full bg-gradient-to-r from-primary-500 to-orange-600 text-white py-3 rounded-xl font-bold hover:from-primary-600 hover:to-orange-700 transition-all flex items-center justify-center gap-2"
+                className="apple-button apple-gradient-primary w-full text-white py-3 font-bold flex items-center justify-center gap-2"
               >
                 <LogIn className="w-5 h-5" />
                 Entrar
@@ -418,7 +421,7 @@ export default function ContentManager() {
               <div className="text-center">
                 <button
                   onClick={() => setShowRegister(true)}
-                  className="text-primary-600 hover:text-primary-800 font-medium"
+                  className="text-primary-600 hover:text-primary-800 font-medium transition-all"
                 >
                   Não tem conta? Criar nova conta
                 </button>
@@ -435,19 +438,8 @@ export default function ContentManager() {
                   type="text"
                   value={registerForm.username}
                   onChange={(e) => setRegisterForm({...registerForm, username: e.target.value})}
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  className="apple-input w-full px-4 py-3"
                   placeholder="Escolha um nome de usuário"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-gray-900 mb-2">Email</label>
-                <input
-                  type="email"
-                  value={registerForm.email}
-                  onChange={(e) => setRegisterForm({...registerForm, email: e.target.value})}
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-                  placeholder="Digite seu email"
                 />
               </div>
 
@@ -457,7 +449,7 @@ export default function ContentManager() {
                   type="password"
                   value={registerForm.password}
                   onChange={(e) => setRegisterForm({...registerForm, password: e.target.value})}
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  className="apple-input w-full px-4 py-3"
                   placeholder="Crie uma senha (min. 6 caracteres)"
                 />
               </div>
@@ -468,14 +460,14 @@ export default function ContentManager() {
                   type="password"
                   value={registerForm.confirmPassword}
                   onChange={(e) => setRegisterForm({...registerForm, confirmPassword: e.target.value})}
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  className="apple-input w-full px-4 py-3"
                   placeholder="Confirme sua senha"
                 />
               </div>
 
               <button
                 onClick={registerUser}
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-bold hover:from-green-600 hover:to-emerald-700 transition-all flex items-center justify-center gap-2"
+                className="apple-button apple-gradient-success w-full text-white py-3 font-bold flex items-center justify-center gap-2"
               >
                 <UserPlus className="w-5 h-5" />
                 Criar Conta
@@ -484,7 +476,7 @@ export default function ContentManager() {
               <div className="text-center">
                 <button
                   onClick={() => setShowRegister(false)}
-                  className="text-primary-600 hover:text-primary-800 font-medium"
+                  className="text-primary-600 hover:text-primary-800 font-medium transition-all"
                 >
                   Já tem conta? Fazer login
                 </button>
@@ -506,57 +498,57 @@ export default function ContentManager() {
         <div className="absolute bottom-20 left-40 w-72 h-72 bg-amber-400 rounded-full filter blur-xl opacity-70 animate-pulse delay-2000"></div>
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 py-8">
+      <div className="relative z-10 container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-7xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-12">
-          <div className="flex items-center gap-4">
-            <img src="/logo.png" alt="Bitcoin Holding" className="h-12" />
+        <div className="flex items-center justify-between mb-6 sm:mb-12 apple-fade-in">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <img src="/logo.png" alt="Crescer - Bitcoin Holding" className="h-8 sm:h-12 apple-bounce" />
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Crescer - Bitcoin Holding</h1>
-              <p className="text-gray-600">Bem-vindo, {currentUser?.username}!</p>
+              <h1 className="text-base sm:text-2xl font-bold text-gray-900">Crescer - Bitcoin Holding</h1>
+              <p className="text-xs sm:text-base text-gray-600">Bem-vindo, {currentUser?.username}!</p>
             </div>
           </div>
           <button
             onClick={logout}
-            className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl font-medium transition-all flex items-center gap-2"
+            className="apple-button apple-gradient-danger text-white px-3 sm:px-6 py-1.5 sm:py-2 font-medium flex items-center gap-1 sm:gap-2"
           >
-            <X className="w-4 h-4" />
-            Sair
+            <X className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Sair</span>
           </button>
         </div>
 
-        <div className="glass-morphism rounded-3xl shadow-2xl border border-white/30 p-12 md:p-16 relative overflow-hidden">
+        <div className="apple-card p-4 sm:p-8 md:p-12 lg:p-16 relative overflow-hidden apple-fade-in">
           {/* Hero Background */}
-          <div className="absolute inset-0 gradient-glass rounded-3xl"></div>
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-primary-400/20 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-orange-400/20 to-transparent rounded-full blur-3xl"></div>
+          <div className="absolute inset-0 gradient-glass apple-card"></div>
+          <div className="absolute top-0 right-0 w-48 h-48 sm:w-96 sm:h-96 bg-gradient-to-bl from-primary-400/20 to-transparent rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 sm:w-96 sm:h-96 bg-gradient-to-tr from-orange-400/20 to-transparent rounded-full blur-3xl"></div>
           
           <div className="relative">
             {/* Hero Section */}
-            <div className="text-center mb-20">
-              <h1 className="text-6xl md:text-8xl font-black mb-8 leading-none">
+            <div className="text-center mb-8 sm:mb-12 md:mb-20 max-w-5xl mx-auto">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 md:mb-8 leading-tight sm:leading-none">
                 <span className="bg-gradient-to-r from-gray-900 via-primary-800 to-orange-900 bg-clip-text text-transparent">
                   Crescer - Bitcoin Holding
                 </span>
               </h1>
-              <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-8 tracking-tight">
+              <h2 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-bold text-blue-600 mb-3 sm:mb-4 md:mb-8 tracking-tight px-2">
                 Estratégias Inteligentes para Crescimento Sustentável
               </h2>
-              <p className="text-xl md:text-2xl text-gray-700 max-w-4xl mx-auto leading-relaxed font-medium">
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed font-medium px-4">
                 Nossa plataforma oferece soluções inovadoras em investimentos digitais, focando no crescimento de longo prazo através de estratégias consolidadas no mercado de criptomoedas.
               </p>
             </div>
 
             {/* Bitcoin Portfolio Summary */}
-            <div className="space-y-12">
+            <div className="space-y-6 sm:space-y-8 md:space-y-12 max-w-6xl mx-auto">
               {/* Seletor de Moeda */}
-              <div className="flex justify-center mb-8">
-                <div className="bg-white/60 backdrop-blur-sm border border-white/60 rounded-2xl p-6">
-                  <h4 className="text-lg font-bold text-gray-900 mb-4 text-center">Moeda de Referência</h4>
+              <div className="flex justify-center mb-4 sm:mb-8">
+                <div className="apple-card p-4 sm:p-6 w-full max-w-sm">
+                  <h4 className="text-sm sm:text-base md:text-lg font-bold text-gray-900 mb-3 sm:mb-4 text-center">Moeda de Referência</h4>
                   <select 
                     value={selectedCurrency} 
                     onChange={(e) => setSelectedCurrency(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-xl bg-white/80 text-gray-900 font-medium focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="apple-select w-full p-2 sm:p-3 text-gray-900 font-medium text-xs sm:text-base"
                   >
                     <option value="BRL">🇧🇷 Real Brasileiro (BRL)</option>
                     <option value="USD">🇺🇸 Dólar Americano (USD)</option>
@@ -567,40 +559,40 @@ export default function ContentManager() {
               </div>
 
               {/* Preço Atual do Bitcoin */}
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-3xl shadow-2xl text-center">
-                <h4 className="text-2xl font-bold mb-4">Preço Atual do Bitcoin</h4>
-                <p className="text-5xl font-black mb-2">
+              <div className="apple-gradient-blue text-white p-4 sm:p-6 md:p-8 apple-card text-center max-w-3xl mx-auto">
+                <h4 className="text-base sm:text-xl md:text-2xl font-bold mb-2 sm:mb-4">Preço Atual do Bitcoin</h4>
+                <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-2">
                   {selectedCurrency} {currentBitcoinPrice.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                 </p>
                 <div className="flex items-center justify-center gap-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <p className="text-lg opacity-90">Binance • Atualizado a cada segundo</p>
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <p className="text-xs sm:text-sm md:text-base lg:text-lg opacity-90">Binance • Atualizado a cada segundo</p>
                 </div>
               </div>
 
               {/* Card de Totais */}
-              <div className="bg-gradient-to-br from-gray-800 to-gray-900 text-white p-8 rounded-3xl shadow-2xl">
-                <h3 className="text-3xl font-bold mb-8 text-center">💼 Resumo do Portfolio</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center">
-                    <div className="text-4xl mb-2">₿</div>
-                    <h5 className="text-lg font-bold mb-2">Total Bitcoin</h5>
-                    <p className="text-2xl font-black">{calculateTotalBitcoin().toFixed(8)} BTC</p>
-                    <p className="text-sm opacity-75">{calculateTotalSatoshis().toLocaleString('pt-BR')} sats</p>
+              <div className="apple-card p-4 sm:p-6 md:p-8 max-w-5xl mx-auto">
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8 text-center gradient-text">💼 Resumo do Portfolio</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                  <div className="text-center apple-card p-4 sm:p-6">
+                    <div className="text-2xl sm:text-3xl md:text-4xl mb-2">₿</div>
+                    <h5 className="text-sm sm:text-base md:text-lg font-bold mb-2">Total Bitcoin</h5>
+                    <p className="text-lg sm:text-xl md:text-2xl font-black text-gray-900">{calculateTotalBitcoin().toFixed(8)} BTC</p>
+                    <p className="text-xs sm:text-sm opacity-75">{calculateTotalSatoshis().toLocaleString('pt-BR')} sats</p>
                   </div>
-                  <div className="text-center">
-                    <div className="text-4xl mb-2">💰</div>
-                    <h5 className="text-lg font-bold mb-2">Total Investido</h5>
-                    <p className="text-2xl font-black">{selectedCurrency} {calculateTotalInvested().toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
+                  <div className="text-center apple-card p-4 sm:p-6">
+                    <div className="text-2xl sm:text-3xl md:text-4xl mb-2">💰</div>
+                    <h5 className="text-sm sm:text-base md:text-lg font-bold mb-2">Total Investido</h5>
+                    <p className="text-lg sm:text-xl md:text-2xl font-black text-gray-900">{selectedCurrency} {calculateTotalInvested().toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
                   </div>
-                  <div className="text-center">
-                    <div className="text-4xl mb-2">📈</div>
-                    <h5 className="text-lg font-bold mb-2">Valor Atual</h5>
-                    <p className="text-2xl font-black">
+                  <div className="text-center apple-card p-4 sm:p-6">
+                    <div className="text-2xl sm:text-3xl md:text-4xl mb-2">📈</div>
+                    <h5 className="text-sm sm:text-base md:text-lg font-bold mb-2">Valor Atual</h5>
+                    <p className="text-lg sm:text-xl md:text-2xl font-black text-gray-900">
                       {selectedCurrency} {(calculateTotalBitcoin() * currentBitcoinPrice).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                     </p>
                     {currentBitcoinPrice > 0 && (
-                      <p className={`text-sm font-bold ${(calculateTotalBitcoin() * currentBitcoinPrice) - calculateTotalInvested() >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      <p className={`text-xs sm:text-sm font-bold ${(calculateTotalBitcoin() * currentBitcoinPrice) - calculateTotalInvested() >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                         {((calculateTotalBitcoin() * currentBitcoinPrice) - calculateTotalInvested() >= 0 ? '+' : '')}
                         {selectedCurrency} {((calculateTotalBitcoin() * currentBitcoinPrice) - calculateTotalInvested()).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                         ({((((calculateTotalBitcoin() * currentBitcoinPrice) - calculateTotalInvested()) / calculateTotalInvested()) * 100).toFixed(2)}%)
@@ -610,44 +602,26 @@ export default function ContentManager() {
                 </div>
               </div>
 
-              {/* Botões de Ação */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button
-                  onClick={() => setShowPasswordBuy(true)}
-                  className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-green-600 hover:to-emerald-700 transition-all flex items-center justify-center gap-2"
-                >
-                  <TrendingUp className="w-5 h-5" />
-                  Registrar Compra
-                </button>
-                <button
-                  onClick={() => setShowPasswordSell(true)}
-                  className="bg-gradient-to-r from-red-500 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-red-600 hover:to-pink-700 transition-all flex items-center justify-center gap-2"
-                >
-                  <TrendingDown className="w-5 h-5" />
-                  Registrar Venda
-                </button>
-              </div>
-
               {/* Cards Individuais das Transações */}
               {userTransactions.length > 0 && (
-                <div>
-                  <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center">📊 Histórico de Transações</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="px-2 sm:px-0">
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-8 text-center">📊 Histórico de Transações</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                     {userTransactions.slice().reverse().map((transaction) => {
                       const { profit, percentage } = calculateProfitLoss(transaction);
                       const isProfit = profit >= 0;
                       
                       return (
-                        <div key={transaction.id} className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300">
+                        <div key={transaction.id} className="apple-card overflow-hidden hover:transform hover:scale-[1.02] transition-all duration-300">
                           {/* Header com data e ações */}
-                          <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-                            <h4 className="font-bold text-gray-900 text-lg">
+                          <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center justify-between">
+                            <h4 className="font-bold text-gray-900 text-sm sm:text-base">
                               {transaction.type === 'buy' ? '🟢 Compra' : '🔴 Venda'} Bitcoin
                             </h4>
-                            <div className="flex items-center gap-2">
-                              <Edit2 className="w-4 h-4 text-gray-400 cursor-pointer hover:text-primary-500" />
+                            <div className="flex items-center gap-1.5 sm:gap-2">
+                              <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 cursor-pointer hover:text-primary-500 transition-colors" />
                               <Trash2 
-                                className="w-4 h-4 text-gray-400 cursor-pointer hover:text-red-500" 
+                                className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 cursor-pointer hover:text-red-500 transition-colors" 
                                 onClick={() => deleteTransaction(transaction.id)}
                               />
                             </div>
@@ -655,8 +629,8 @@ export default function ContentManager() {
 
                           {/* Status */}
                           {transaction.type === 'buy' && (
-                            <div className="px-4 py-2">
-                              <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${
+                            <div className="px-3 sm:px-4 py-2">
+                              <div className={`apple-badge text-xs ${
                                 isProfit 
                                   ? 'bg-green-100 text-green-800' 
                                   : 'bg-red-100 text-red-800'
@@ -668,38 +642,38 @@ export default function ContentManager() {
                           )}
 
                           {/* Informações principais */}
-                          <div className="p-4 space-y-4">
+                          <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
                             <div className="flex justify-between items-center">
-                              <span className="text-gray-600 text-sm">Data/Hora</span>
-                              <span className="font-semibold text-gray-900">{transaction.date} • {transaction.time}</span>
+                              <span className="text-gray-600 text-xs sm:text-sm">Data/Hora</span>
+                              <span className="font-semibold text-gray-900 text-xs sm:text-sm">{transaction.date} • {transaction.time}</span>
                             </div>
 
                             <div className="flex justify-between items-center">
-                              <span className="text-gray-600 text-sm">Quantidade</span>
+                              <span className="text-gray-600 text-xs sm:text-sm">Quantidade</span>
                               <div className="text-right">
-                                <div className="font-bold text-gray-900">{transaction.bitcoinAmount.toFixed(8)} BTC</div>
+                                <div className="font-bold text-gray-900 text-xs sm:text-sm">{transaction.bitcoinAmount.toFixed(8)} BTC</div>
                                 <div className="text-xs text-gray-500">{transaction.satoshis.toLocaleString('pt-BR')} sats</div>
                               </div>
                             </div>
 
                             <div className="flex justify-between items-center">
-                              <span className="text-gray-600 text-sm">Preço Unitário</span>
-                              <span className="font-semibold text-gray-900">
+                              <span className="text-gray-600 text-xs sm:text-sm">Preço Unitário</span>
+                              <span className="font-semibold text-gray-900 text-xs sm:text-sm">
                                 {transaction.fiatCurrency} {transaction.bitcoinPrice.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                               </span>
                             </div>
 
                             <div className="flex justify-between items-center">
-                              <span className="text-gray-600 text-sm">Valor Total</span>
-                              <span className={`font-bold text-lg ${transaction.type === 'buy' ? 'text-gray-900' : 'text-green-600'}`}>
+                              <span className="text-gray-600 text-xs sm:text-sm">Valor Total</span>
+                              <span className={`font-bold text-base sm:text-lg ${transaction.type === 'buy' ? 'text-gray-900' : 'text-green-600'}`}>
                                 {transaction.fiatCurrency} {transaction.fiatAmount.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                               </span>
                             </div>
 
                             {currentBitcoinPrice > 0 && transaction.type === 'buy' && (
                               <div className="flex justify-between items-center">
-                                <span className="text-gray-600 text-sm">Valor Atual</span>
-                                <span className={`font-bold text-lg ${isProfit ? 'text-green-600' : 'text-red-600'}`}>
+                                <span className="text-gray-600 text-xs sm:text-sm">Valor Atual</span>
+                                <span className={`font-bold text-base sm:text-lg ${isProfit ? 'text-green-600' : 'text-red-600'}`}>
                                   {selectedCurrency} {(transaction.bitcoinAmount * currentBitcoinPrice).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                                 </span>
                               </div>
@@ -708,18 +682,18 @@ export default function ContentManager() {
 
                           {/* Barra de progresso do resultado */}
                           {currentBitcoinPrice > 0 && transaction.type === 'buy' && (
-                            <div className="px-4 pb-4">
-                              <div className={`w-full rounded-full h-2 ${isProfit ? 'bg-green-200' : 'bg-red-200'}`}>
+                            <div className="px-3 sm:px-4 pb-3 sm:pb-4">
+                              <div className={`apple-progress ${isProfit ? 'bg-green-200' : 'bg-red-200'}`}>
                                 <div 
-                                  className={`h-2 rounded-full ${isProfit ? 'bg-green-500' : 'bg-red-500'}`} 
+                                  className={`apple-progress-bar ${isProfit ? 'bg-green-500' : 'bg-red-500'}`} 
                                   style={{width: `${Math.min(Math.abs(percentage), 100)}%`}}
                                 ></div>
                               </div>
                               <div className="flex justify-between items-center mt-2">
-                                <span className={`text-sm font-medium ${isProfit ? 'text-green-600' : 'text-red-600'}`}>
+                                <span className={`text-xs sm:text-sm font-medium ${isProfit ? 'text-green-600' : 'text-red-600'}`}>
                                   {isProfit ? '+' : ''}{profit.toLocaleString('pt-BR', {minimumFractionDigits: 2})} {selectedCurrency}
                                 </span>
-                                <span className={`text-sm font-bold ${isProfit ? 'text-green-600' : 'text-red-600'}`}>
+                                <span className={`text-xs sm:text-sm font-bold ${isProfit ? 'text-green-600' : 'text-red-600'}`}>
                                   {isProfit ? '+' : ''}{percentage.toFixed(2)}%
                                 </span>
                               </div>
@@ -727,8 +701,8 @@ export default function ContentManager() {
                           )}
 
                           {/* Rodapé com ações */}
-                          <div className="p-4 bg-gray-50 border-t border-gray-100">
-                            <button className="w-full text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors">
+                          <div className="p-3 sm:p-4 bg-gray-50 border-t border-gray-100">
+                            <button className="w-full text-blue-600 hover:text-blue-800 text-xs sm:text-sm font-medium transition-colors apple-button bg-transparent border-none">
                               Ver detalhes completos
                             </button>
                           </div>
@@ -745,73 +719,73 @@ export default function ContentManager() {
 
       {/* Modal de Compra */}
       {showPasswordBuy && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl border border-white/30 p-8 w-full max-w-md">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">Registrar Compra</h3>
+        <div className="apple-modal fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
+          <div className="apple-modal-content p-4 sm:p-8 w-full max-w-md apple-fade-in">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h3 className="text-lg sm:text-2xl font-bold text-gray-900">Registrar Compra</h3>
               <button
                 onClick={() => setShowPasswordBuy(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="apple-button bg-gray-100 hover:bg-gray-200 p-1.5 sm:p-2 text-gray-600 hover:text-gray-800"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
 
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-4">
+              <div className="apple-badge bg-red-50 text-red-800 mb-3 sm:mb-4 p-2 sm:p-3 w-full text-xs sm:text-sm">
                 {error}
               </div>
             )}
 
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="grid grid-cols-2 gap-2 sm:gap-4">
                 <div>
-                  <label className="block text-sm font-bold text-gray-900 mb-2">Data</label>
+                  <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">Data</label>
                   <input
                     type="date"
                     value={newBuyTransaction.date}
                     onChange={(e) => setNewBuyTransaction({...newBuyTransaction, date: e.target.value})}
-                    className="w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                    className="apple-input w-full px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-base"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-900 mb-2">Hora</label>
+                  <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">Hora</label>
                   <input
                     type="time"
                     value={newBuyTransaction.time}
                     onChange={(e) => setNewBuyTransaction({...newBuyTransaction, time: e.target.value})}
-                    className="w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                    className="apple-input w-full px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-base"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-bold text-gray-900 mb-2">Quantidade Bitcoin</label>
+                <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">Quantidade Bitcoin</label>
                 <input
                   type="number"
                   step="0.00000001"
                   value={newBuyTransaction.bitcoinAmount}
                   onChange={(e) => setNewBuyTransaction({...newBuyTransaction, bitcoinAmount: parseFloat(e.target.value) || 0})}
-                  className="w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  className="apple-input w-full px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-base"
                   placeholder="0.00000000"
                 />
               </div>
               <div>
-                <label className="block text-sm font-bold text-gray-900 mb-2">Valor Pago</label>
+                <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">Valor Pago</label>
                 <input
                   type="number"
                   step="0.01"
                   value={newBuyTransaction.fiatAmount}
                   onChange={(e) => setNewBuyTransaction({...newBuyTransaction, fiatAmount: parseFloat(e.target.value) || 0})}
-                  className="w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  className="apple-input w-full px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-base"
                   placeholder="0.00"
                 />
               </div>
               <div>
-                <label className="block text-sm font-bold text-gray-900 mb-2">Moeda</label>
+                <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">Moeda</label>
                 <select
                   value={newBuyTransaction.fiatCurrency}
                   onChange={(e) => setNewBuyTransaction({...newBuyTransaction, fiatCurrency: e.target.value})}
-                  className="w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  className="apple-select w-full px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-base"
                 >
                   <option value="BRL">🇧🇷 Real Brasileiro (BRL)</option>
                   <option value="USD">🇺🇸 Dólar Americano (USD)</option>
@@ -820,19 +794,26 @@ export default function ContentManager() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-bold text-gray-900 mb-2">Preço Bitcoin ({newBuyTransaction.fiatCurrency})</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={newBuyTransaction.bitcoinPrice}
-                  onChange={(e) => setNewBuyTransaction({...newBuyTransaction, bitcoinPrice: parseFloat(e.target.value) || 0})}
-                  className="w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-                  placeholder="0.00"
-                />
+                <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">
+                  Preço Bitcoin ({newBuyTransaction.fiatCurrency}) - <span className="text-green-600">Tempo Real</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={currentBitcoinPrice.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                    disabled
+                    className="apple-input w-full px-2 sm:px-4 py-2 sm:py-3 font-semibold text-gray-900 text-xs sm:text-base"
+                    placeholder="Aguardando preço..."
+                  />
+                  <div className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 sm:gap-2">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-xs text-gray-600 font-medium hidden sm:inline">Binance</span>
+                  </div>
+                </div>
               </div>
               <button
                 onClick={addBuyTransaction}
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-bold hover:from-green-600 hover:to-emerald-700 transition-all"
+                className="apple-button apple-gradient-success w-full text-white py-2.5 sm:py-3 font-bold text-sm sm:text-base"
               >
                 Registrar Compra
               </button>
@@ -843,52 +824,52 @@ export default function ContentManager() {
 
       {/* Modal de Venda */}
       {showPasswordSell && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl border border-white/30 p-8 w-full max-w-md">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">Registrar Venda</h3>
+        <div className="apple-modal fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
+          <div className="apple-modal-content p-4 sm:p-8 w-full max-w-md apple-fade-in">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h3 className="text-lg sm:text-2xl font-bold text-gray-900">Registrar Venda</h3>
               <button
                 onClick={() => setShowPasswordSell(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="apple-button bg-gray-100 hover:bg-gray-200 p-1.5 sm:p-2 text-gray-600 hover:text-gray-800"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
 
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-4">
+              <div className="apple-badge bg-red-50 text-red-800 mb-3 sm:mb-4 p-2 sm:p-3 w-full text-xs sm:text-sm">
                 {error}
               </div>
             )}
 
-            <div className="space-y-4">
-              <div className="bg-blue-50 p-4 rounded-xl">
-                <p className="text-sm text-blue-800">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="apple-card bg-blue-50 p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-blue-800">
                   <strong>Saldo disponível:</strong> {calculateTotalSatoshis().toLocaleString('pt-BR')} satoshis
                 </p>
-                <p className="text-sm text-blue-800">
+                <p className="text-xs sm:text-sm text-blue-800">
                   <strong>Preço atual:</strong> {selectedCurrency} {currentBitcoinPrice.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                 </p>
               </div>
               
               <div>
-                <label className="block text-sm font-bold text-gray-900 mb-2">Quantidade de Satoshis para Vender</label>
+                <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2">Quantidade de Satoshis para Vender</label>
                 <input
                   type="number"
                   value={newSellTransaction.satoshiAmount}
                   onChange={(e) => setNewSellTransaction({...newSellTransaction, satoshiAmount: parseInt(e.target.value) || 0})}
-                  className="w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  className="apple-input w-full px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-base"
                   placeholder="Quantidade em satoshis"
                   max={calculateTotalSatoshis()}
                 />
               </div>
               
               {newSellTransaction.satoshiAmount > 0 && (
-                <div className="bg-green-50 p-4 rounded-xl">
-                  <p className="text-sm text-green-800">
+                <div className="apple-card bg-green-50 p-3 sm:p-4">
+                  <p className="text-xs sm:text-sm text-green-800">
                     <strong>Bitcoin a vender:</strong> {(newSellTransaction.satoshiAmount / 100000000).toFixed(8)} BTC
                   </p>
-                  <p className="text-sm text-green-800">
+                  <p className="text-xs sm:text-sm text-green-800">
                     <strong>Valor estimado:</strong> {selectedCurrency} {((newSellTransaction.satoshiAmount / 100000000) * currentBitcoinPrice).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                   </p>
                 </div>
@@ -897,7 +878,7 @@ export default function ContentManager() {
               <button
                 onClick={addSellTransaction}
                 disabled={newSellTransaction.satoshiAmount <= 0 || newSellTransaction.satoshiAmount > calculateTotalSatoshis()}
-                className="w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-3 rounded-xl font-bold hover:from-red-600 hover:to-pink-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="apple-button apple-gradient-danger w-full text-white py-2.5 sm:py-3 font-bold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Registrar Venda
               </button>
@@ -905,6 +886,41 @@ export default function ContentManager() {
           </div>
         </div>
       )}
+
+      {/* Menu de Ação Flutuante */}
+      {showFabMenu && (
+        <div className="fab-menu">
+          <button
+            onClick={() => {
+              setShowPasswordBuy(true);
+              setShowFabMenu(false);
+            }}
+            className="fab-menu-item apple-gradient-success text-white"
+          >
+            <TrendingUp className="w-5 h-5" />
+            <span className="font-semibold">Registrar Compra</span>
+          </button>
+          <button
+            onClick={() => {
+              setShowPasswordSell(true);
+              setShowFabMenu(false);
+            }}
+            className="fab-menu-item apple-gradient-danger text-white"
+          >
+            <TrendingDown className="w-5 h-5" />
+            <span className="font-semibold">Registrar Venda</span>
+          </button>
+        </div>
+      )}
+
+      {/* Botão de Ação Flutuante */}
+      <button
+        onClick={() => setShowFabMenu(!showFabMenu)}
+        className="fab-button apple-gradient-primary text-white"
+        aria-label="Adicionar transação"
+      >
+        {showFabMenu ? <X className="w-6 h-6" /> : <span className="text-3xl font-light">+</span>}
+      </button>
     </div>
   );
 }
