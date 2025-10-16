@@ -2358,7 +2358,7 @@ export default function ContentManager() {
                   </h2>
                   <p style={{
                     fontSize: '14px',
-                    color: '#94a3b8',
+                    color: colors.textSecondary,
                     margin: '4px 0 0 0'
                   }}>
                     Carregue arquivos CSV ou JSON
@@ -2444,7 +2444,7 @@ export default function ContentManager() {
                 </h3>
                 <p style={{
                   fontSize: '14px',
-                  color: '#94a3b8',
+                  color: colors.textSecondary,
                   marginBottom: '20px'
                 }}>
                   ou clique no botão abaixo para selecionar
@@ -2505,7 +2505,7 @@ export default function ContentManager() {
                 </h4>
                 <ul style={{
                   fontSize: '13px',
-                  color: '#94a3b8',
+                  color: colors.textSecondary,
                   lineHeight: '1.8',
                   paddingLeft: '20px',
                   margin: 0
@@ -2660,7 +2660,7 @@ export default function ContentManager() {
                   justifyContent: 'center',
                   boxShadow: '0 10px 25px -5px rgba(251, 146, 60, 0.5)'
                 }}>
-                  <Bitcoin style={{width: '28px', height: '28px', color: 'white'}} />
+                  <Bitcoin style={{width: '28px', height: '28px', color: colors.text}} />
                 </div>
                 <div>
                   <h3 style={{fontSize: '24px', fontWeight: 'bold', color: colors.text, margin: 0}}>
@@ -3202,7 +3202,7 @@ export default function ContentManager() {
                     justifyContent: 'center',
                     boxShadow: '0 4px 12px rgba(251, 146, 60, 0.4)'
                   }}>
-                    <BarChart3 style={{width: '24px', height: '24px', color: 'white'}} />
+                    <BarChart3 style={{width: '24px', height: '24px', color: colors.text}} />
                   </div>
                   <div>
                     <h3 style={{fontSize: '20px', fontWeight: 'bold', color: colors.text, marginBottom: '4px'}}>Histórico de Transações</h3>
@@ -3324,7 +3324,7 @@ export default function ContentManager() {
                               ? '0 4px 12px rgba(16, 185, 129, 0.4)'
                               : '0 4px 12px rgba(239, 68, 68, 0.4)'
                           }}>
-                            {transaction.type === 'buy' ? <TrendingUp style={{width: '20px', height: '20px', color: 'white'}} /> : <TrendingDown style={{width: '20px', height: '20px', color: 'white'}} />}
+                            {transaction.type === 'buy' ? <TrendingUp style={{width: '20px', height: '20px', color: colors.text}} /> : <TrendingDown style={{width: '20px', height: '20px', color: colors.text}} />}
                           </div>
                           <div>
                             <div style={{fontSize: '14px', fontWeight: 'bold', color: colors.text}}>
@@ -3371,7 +3371,7 @@ export default function ContentManager() {
                               e.currentTarget.style.borderColor = 'transparent';
                             }}
                           >
-                            <Edit style={{width: '16px', height: '16px', color: '#94a3b8'}} />
+                            <Edit style={{width: '16px', height: '16px', color: colors.textSecondary}} />
                           </button>
                           <button 
                             onClick={() => {
@@ -3397,7 +3397,7 @@ export default function ContentManager() {
                               e.currentTarget.style.borderColor = 'transparent';
                             }}
                           >
-                            <Trash2 style={{width: '16px', height: '16px', color: '#94a3b8'}} />
+                            <Trash2 style={{width: '16px', height: '16px', color: colors.textSecondary}} />
                           </button>
                         </div>
                       </div>
@@ -3405,7 +3405,7 @@ export default function ContentManager() {
                       {/* Informações */}
                       <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
                         {/* Hora */}
-                        <div style={{display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#94a3b8'}}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: colors.textSecondary}}>
                           <Clock style={{width: '12px', height: '12px'}} />
                           <span>{transaction.time}</span>
                         </div>
@@ -3484,7 +3484,7 @@ export default function ContentManager() {
                             background: 'rgba(71, 85, 105, 0.2)',
                             border: '2px solid rgba(71, 85, 105, 0.3)'
                           }}>
-                            <span style={{fontSize: '12px', color: '#64748b'}}>Resultado não disponível</span>
+                            <span style={{fontSize: '12px', color: colors.textTertiary}}>Resultado não disponível</span>
                           </div>
                         )}
                       </div>
@@ -3550,7 +3550,7 @@ export default function ContentManager() {
           backdropFilter: 'blur(4px)'
         }}>
           <div style={{
-            background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e293b 100%)',
+            background: colors.modalBg,
             borderRadius: '24px',
             boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8)',
             width: '100%',
@@ -3559,7 +3559,7 @@ export default function ContentManager() {
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',
-            border: '1px solid #334155'
+            border: `1px solid ${colors.border}`
           }}>
             {/* Header do Modal */}
             <div style={{
@@ -3596,7 +3596,7 @@ export default function ContentManager() {
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
                 }}
               >
-                <X style={{width: '24px', height: '24px', color: 'white'}} />
+                <X style={{width: '24px', height: '24px', color: colors.text}} />
               </button>
             </div>
 
@@ -3604,7 +3604,7 @@ export default function ContentManager() {
             <div style={{overflow: 'auto', flex: '1'}}>
               <table style={{width: '100%', borderCollapse: 'collapse'}}>
                 <thead style={{
-                  background: '#1e293b',
+                  background: colors.headerBg,
                   position: 'sticky',
                   top: '0',
                   zIndex: '10'
@@ -3615,10 +3615,10 @@ export default function ContentManager() {
                       textAlign: 'left',
                       fontSize: '12px',
                       fontWeight: 'bold',
-                      color: '#cbd5e1',
+                      color: colors.textSecondary,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: '2px solid #475569'
+                      borderBottom: `2px solid ${colors.border}`
                     }}>
                       Tipo
                     </th>
@@ -3627,10 +3627,10 @@ export default function ContentManager() {
                       textAlign: 'left',
                       fontSize: '12px',
                       fontWeight: 'bold',
-                      color: '#cbd5e1',
+                      color: colors.textSecondary,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: '2px solid #475569'
+                      borderBottom: `2px solid ${colors.border}`
                     }}>
                       Data
                     </th>
@@ -3639,10 +3639,10 @@ export default function ContentManager() {
                       textAlign: 'left',
                       fontSize: '12px',
                       fontWeight: 'bold',
-                      color: '#cbd5e1',
+                      color: colors.textSecondary,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: '2px solid #475569'
+                      borderBottom: `2px solid ${colors.border}`
                     }}>
                       Hora
                     </th>
@@ -3651,10 +3651,10 @@ export default function ContentManager() {
                       textAlign: 'right',
                       fontSize: '12px',
                       fontWeight: 'bold',
-                      color: '#cbd5e1',
+                      color: colors.textSecondary,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: '2px solid #475569'
+                      borderBottom: `2px solid ${colors.border}`
                     }}>
                       Quantidade BTC
                     </th>
@@ -3663,10 +3663,10 @@ export default function ContentManager() {
                       textAlign: 'right',
                       fontSize: '12px',
                       fontWeight: 'bold',
-                      color: '#cbd5e1',
+                      color: colors.textSecondary,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: '2px solid #475569'
+                      borderBottom: `2px solid ${colors.border}`
                     }}>
                       Satoshis
                     </th>
@@ -3675,10 +3675,10 @@ export default function ContentManager() {
                       textAlign: 'right',
                       fontSize: '12px',
                       fontWeight: 'bold',
-                      color: '#cbd5e1',
+                      color: colors.textSecondary,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: '2px solid #475569'
+                      borderBottom: `2px solid ${colors.border}`
                     }}>
                       Preço Unitário
                     </th>
@@ -3687,10 +3687,10 @@ export default function ContentManager() {
                       textAlign: 'right',
                       fontSize: '12px',
                       fontWeight: 'bold',
-                      color: '#cbd5e1',
+                      color: colors.textSecondary,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: '2px solid #475569'
+                      borderBottom: `2px solid ${colors.border}`
                     }}>
                       Valor Total
                     </th>
@@ -3699,10 +3699,10 @@ export default function ContentManager() {
                       textAlign: 'right',
                       fontSize: '12px',
                       fontWeight: 'bold',
-                      color: '#cbd5e1',
+                      color: colors.textSecondary,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: '2px solid #475569'
+                      borderBottom: `2px solid ${colors.border}`
                     }}>
                       Valor Atual
                     </th>
@@ -3711,10 +3711,10 @@ export default function ContentManager() {
                       textAlign: 'right',
                       fontSize: '12px',
                       fontWeight: 'bold',
-                      color: '#cbd5e1',
+                      color: colors.textSecondary,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: '2px solid #475569'
+                      borderBottom: `2px solid ${colors.border}`
                     }}>
                       Lucro/Prejuízo
                     </th>
@@ -3723,16 +3723,16 @@ export default function ContentManager() {
                       textAlign: 'center',
                       fontSize: '12px',
                       fontWeight: 'bold',
-                      color: '#cbd5e1',
+                      color: colors.textSecondary,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: '2px solid #475569'
+                      borderBottom: `2px solid ${colors.border}`
                     }}>
                       Ações
                     </th>
                   </tr>
                 </thead>
-                <tbody style={{background: '#0f172a'}}>
+                <tbody style={{background: colors.modalBg}}>
                   {userTransactions.slice().reverse().map((transaction, index) => {
                     const { profit, percentage } = calculateProfitLoss(transaction);
                     const isProfit = profit >= 0;
@@ -3742,15 +3742,15 @@ export default function ContentManager() {
                       <tr 
                         key={transaction.id} 
                         style={{
-                          borderBottom: '1px solid #334155',
+                          borderBottom: `1px solid ${colors.border}`,
                           transition: 'background 0.2s',
-                          background: index % 2 === 0 ? '#0f172a' : '#1e293b'
+                          background: index % 2 === 0 ? colors.cardBg : colors.cardBgSecondary
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.background = '#334155';
+                          e.currentTarget.style.background = isDarkTheme ? '#334155' : '#e5e7eb';
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.background = index % 2 === 0 ? '#0f172a' : '#1e293b';
+                          e.currentTarget.style.background = index % 2 === 0 ? colors.cardBg : colors.cardBgSecondary;
                         }}
                       >
                         <td style={{padding: '12px 16px', whiteSpace: 'nowrap'}}>
@@ -3769,36 +3769,36 @@ export default function ContentManager() {
                             }}>
                               {transaction.type === 'buy' ? <TrendingUp style={{width: '16px', height: '16px'}} /> : <TrendingDown style={{width: '16px', height: '16px'}} />}
                             </div>
-                            <span style={{fontSize: '14px', fontWeight: '500', color: 'white'}}>
+                            <span style={{fontSize: '14px', fontWeight: '500', color: colors.text}}>
                               {transaction.type === 'buy' ? 'Compra' : 'Venda'}
                             </span>
                           </div>
                         </td>
-                        <td style={{padding: '12px 16px', whiteSpace: 'nowrap', fontSize: '14px', color: 'white'}}>
+                        <td style={{padding: '12px 16px', whiteSpace: 'nowrap', fontSize: '14px', color: colors.text}}>
                           {transaction.date}
                         </td>
-                        <td style={{padding: '12px 16px', whiteSpace: 'nowrap', fontSize: '14px', color: 'white'}}>
+                        <td style={{padding: '12px 16px', whiteSpace: 'nowrap', fontSize: '14px', color: colors.text}}>
                           {transaction.time}
                         </td>
                         <td style={{padding: '12px 16px', whiteSpace: 'nowrap', textAlign: 'right', fontSize: '14px', fontFamily: 'monospace', fontWeight: '600', color: '#fb923c'}}>
                           {transaction.bitcoinAmount.toFixed(8)}
                         </td>
-                        <td style={{padding: '12px 16px', whiteSpace: 'nowrap', textAlign: 'right', fontSize: '14px', color: '#94a3b8'}}>
+                        <td style={{padding: '12px 16px', whiteSpace: 'nowrap', textAlign: 'right', fontSize: '14px', color: colors.textSecondary}}>
                           {transaction.satoshis.toLocaleString('pt-BR')}
                         </td>
                         <td style={{padding: '12px 16px', whiteSpace: 'nowrap', textAlign: 'right', fontSize: '14px'}}>
                           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end'}}>
-                            <span style={{fontWeight: '600', color: 'white'}}>{selectedCurrency} {convertCurrency(transaction.bitcoinPrice, transaction.fiatCurrency, selectedCurrency, transaction.exchangeRates).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                            <span style={{fontWeight: '600', color: colors.text}}>{selectedCurrency} {convertCurrency(transaction.bitcoinPrice, transaction.fiatCurrency, selectedCurrency, transaction.exchangeRates).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
                             {transaction.fiatCurrency !== selectedCurrency && (
-                              <span style={{fontSize: '12px', color: '#64748b', marginTop: '2px'}}>{transaction.fiatCurrency} {transaction.bitcoinPrice.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                              <span style={{fontSize: '12px', color: colors.textTertiary, marginTop: '2px'}}>{transaction.fiatCurrency} {transaction.bitcoinPrice.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
                             )}
                           </div>
                         </td>
                         <td style={{padding: '12px 16px', whiteSpace: 'nowrap', textAlign: 'right', fontSize: '14px', fontWeight: '600'}}>
                           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end'}}>
-                            <span style={{fontWeight: 'bold', color: 'white'}}>{selectedCurrency} {convertCurrency(transaction.fiatAmount, transaction.fiatCurrency, selectedCurrency, transaction.exchangeRates).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                            <span style={{fontWeight: 'bold', color: colors.text}}>{selectedCurrency} {convertCurrency(transaction.fiatAmount, transaction.fiatCurrency, selectedCurrency, transaction.exchangeRates).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
                             {transaction.fiatCurrency !== selectedCurrency && (
-                              <span style={{fontSize: '12px', color: '#64748b', fontWeight: 'normal', marginTop: '2px'}}>{transaction.fiatCurrency} {transaction.fiatAmount.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                              <span style={{fontSize: '12px', color: colors.textTertiary, fontWeight: 'normal', marginTop: '2px'}}>{transaction.fiatCurrency} {transaction.fiatAmount.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
                             )}
                           </div>
                         </td>
@@ -3808,7 +3808,7 @@ export default function ContentManager() {
                               {selectedCurrency} {currentValue.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                             </span>
                           ) : (
-                            <span style={{color: '#64748b'}}>-</span>
+                            <span style={{color: colors.textTertiary}}>-</span>
                           )}
                         </td>
                         <td style={{padding: '12px 16px', whiteSpace: 'nowrap', textAlign: 'right'}}>
@@ -3830,7 +3830,7 @@ export default function ContentManager() {
                               </span>
                             </div>
                           ) : (
-                            <span style={{color: '#64748b'}}>-</span>
+                            <span style={{color: colors.textTertiary}}>-</span>
                           )}
                         </td>
                         <td style={{padding: '12px 16px', whiteSpace: 'nowrap', textAlign: 'center'}}>
@@ -3856,7 +3856,7 @@ export default function ContentManager() {
                               e.currentTarget.style.background = 'transparent';
                             }}
                           >
-                            <Trash2 style={{width: '16px', height: '16px', color: '#94a3b8'}} />
+                            <Trash2 style={{width: '16px', height: '16px', color: colors.textSecondary}} />
                           </button>
                         </td>
                       </tr>
@@ -3868,8 +3868,8 @@ export default function ContentManager() {
 
             {/* Footer com resumo */}
             <div style={{
-              background: '#1e293b',
-              borderTop: '1px solid #475569',
+              background: colors.headerBg,
+              borderTop: `1px solid ${colors.border}`,
               padding: '24px'
             }}>
               <div style={{
@@ -3878,25 +3878,25 @@ export default function ContentManager() {
                 gap: '16px'
               }}>
                 <div style={{textAlign: 'center'}}>
-                  <p style={{fontSize: '12px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '600', marginBottom: '8px'}}>Total Investido</p>
-                  <p style={{fontSize: '18px', fontWeight: 'bold', color: 'white'}}>
+                  <p style={{fontSize: '12px', color: colors.textSecondary, textTransform: 'uppercase', fontWeight: '600', marginBottom: '8px'}}>Total Investido</p>
+                  <p style={{fontSize: '18px', fontWeight: 'bold', color: colors.text}}>
                     {selectedCurrency} {calculateTotalInvested().toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                   </p>
                 </div>
                 <div style={{textAlign: 'center'}}>
-                  <p style={{fontSize: '12px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '600', marginBottom: '8px'}}>Total BTC</p>
+                  <p style={{fontSize: '12px', color: colors.textSecondary, textTransform: 'uppercase', fontWeight: '600', marginBottom: '8px'}}>Total BTC</p>
                   <p style={{fontSize: '18px', fontWeight: 'bold', color: '#fb923c'}}>
                     {calculateTotalBitcoin().toFixed(8)} BTC
                   </p>
                 </div>
                 <div style={{textAlign: 'center'}}>
-                  <p style={{fontSize: '12px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '600', marginBottom: '8px'}}>Valor Atual</p>
-                  <p style={{fontSize: '18px', fontWeight: 'bold', color: 'white'}}>
+                  <p style={{fontSize: '12px', color: colors.textSecondary, textTransform: 'uppercase', fontWeight: '600', marginBottom: '8px'}}>Valor Atual</p>
+                  <p style={{fontSize: '18px', fontWeight: 'bold', color: colors.text}}>
                     {selectedCurrency} {(calculateTotalBitcoin() * currentBitcoinPrice).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                   </p>
                 </div>
                 <div style={{textAlign: 'center'}}>
-                  <p style={{fontSize: '12px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '600', marginBottom: '8px'}}>Resultado</p>
+                  <p style={{fontSize: '12px', color: colors.textSecondary, textTransform: 'uppercase', fontWeight: '600', marginBottom: '8px'}}>Resultado</p>
                   <p style={{
                     fontSize: '18px',
                     fontWeight: 'bold',
