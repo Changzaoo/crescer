@@ -3,11 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#fb923c" />
+    <meta name="description" content="Gerenciador de Portfolio de Bitcoin com análise de lucros e perdas" />
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Bitcoin Portfolio" />
+    
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileColor" content="#fb923c" />
+    <meta name="msapplication-TileImage" content="/icon-192.png" />
+    
     <title>Crescer - Bitcoin Holding</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+              console.log('Service Worker registrado:', registration);
+            })
+            .catch(error => {
+              console.log('Erro ao registrar Service Worker:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
