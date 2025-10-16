@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle, X } from 'lucide-react';
+import { AlertCircle, CheckCircle } from 'lucide-react';
 
 interface CustomAlertProps {
   message: string;
